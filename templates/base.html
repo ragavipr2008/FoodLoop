@@ -1,1 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FoodLoop smart surplus food rescue platform">
+    <title>{% block title %}FoodLoop{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+<nav class="navbar">
+    <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark">F</span>
+        <span>Food<span class="brand-accent">Loop</span></span>
+    </a>
+    <div class="nav-links">
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('foods') }}">Find Food</a>
+        <a href="{{ url_for('smart_match') }}"><span class="nav-ai">✦ SmartMatch</span></a>
+        <a href="{{ url_for('add_food') }}">Donate</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+    </div>
+    <a class="nav-cta" href="{{ url_for('add_food') }}">+ Donate Food</a>
+</nav>
 
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}"><span>{{ "✓" if category == "success" else "!" }}</span>{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer>
+    <div class="footer-brand"><span class="brand-mark small">F</span><strong>FoodLoop</strong></div>
+    <span>Share food · Reduce waste · Strengthen communities</span>
+    <span>Hackathon Prototype · {{ current_year }}</span>
+</footer>
+</body>
+</html>

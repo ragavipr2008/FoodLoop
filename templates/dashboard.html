@@ -1,1 +1,68 @@
+{% extends "base.html" %}
+{% block title %}FoodLoop | Impact Dashboard{% endblock %}
+{% block content %}
+<section class="page-header modern-header dashboard-header">
+    <div><span class="eyebrow">IMPACT CONTROL CENTER</span><h1>See the food loop in motion.</h1><p>Live rescue activity, urgency signals and measurable impact.</p></div>
+    <a class="btn primary" href="{{ url_for('smart_match') }}">✦ SmartMatch</a>
+</section>
 
+<section class="stats-grid dashboard-stats new-stats">
+    <div class="stat-card highlight"><span>🍱</span><strong>{{ claimed }}</strong><small>Portions Rescued</small><b>{{ rescue_rate }}% rescue rate</b></div>
+    <div class="stat-card"><span>♻️</span><strong>{{ picked_up }}</strong><small>Picked Up</small><b>{{ pickup_rate }}% pickup completion</b></div>
+    <div class="stat-card"><span>⚡</span><strong>{{ urgent_count }}</strong><small>Urgent Listings</small><b>Rescue-first priority</b></div>
+    <div class="stat-card"><span>📦</span><strong>{{ available }}</strong><small>Portions Available</small><b>{{ listings_count }} total listings</b></div>
+</section>
+
+<section class="dashboard-grid new-dashboard">
+    <div class="panel activity-panel">
+        <div class="panel-header"><div><span class="eyebrow">LIVE ACTIVITY</span><h2>Recent claims</h2></div><span class="count-pill">{{ claims_count }} total</span></div>
+        {% if recent_claims %}
+        <div class="table-wrap"><table><thead><tr><th>Food</th><th>Recipient</th><th>Qty</th><th>Status</th><th></th></tr></thead><tbody>
+        {% for claim in recent_claims %}
+        <tr>
+            <td><strong>{{ claim.food_name }}</strong><small>{{ claim.pickup_location }}</small></td>
+            <td>{{ claim.recipient_name }}</td><td>{{ claim.quantity }}</td>
+            <td><span class="status {{ claim.status|lower|replace(' ', '-') }}">{{ claim.status }}</span></td>
+            <td>{% if claim.status == 'Claimed' %}<form method="POST" action="{{ url_for('pickup_claim', claim_id=claim.id) }}"><button class="table-btn" type="submit">Mark Picked Up</button></form>{% else %}<span class="done">✓ Complete</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+        </tbody></table></div>
+        {% else %}<div class="empty-small">No claims yet. Add a listing to start your first rescue.</div>{% endif %}
+    </div>
+
+    <div class="panel rescue-panel">
+        <div class="panel-header"><div><span class="eyebrow">URGENT NOW</span><h2>Rescue queue</h2></div><span class="live-dot">LIVE</span></div>
+        {% if urgent_items %}
+        <div class="urgent-list">
+        {% for item in urgent_items %}
+            <a href="{{ url_for('claim', food_id=item.id) }}" class="urgent-item">
+                <span class="urgent-icon">⚡</span><div><strong>{{ item.food_name }}</strong><small>{{ item.available_quantity }} portions · {{ item.pickup_location }}</small></div><span class="urgent-score">{{ item.urgency_score }}</span>
+            </a>
+        {% endfor %}
+        </div>
+        {% else %}<div class="empty-small">No high-priority listings right now.</div>{% endif %}
+    </div>
+</section>
+
+<section class="impact-dashboard">
+    <div class="impact-card-main">
+        <span class="eyebrow light">ESTIMATED IMPACT</span>
+        <h2>Every portion rescued moves the needle.</h2>
+        <div class="big-impact"><strong>{{ estimated_meals }}</strong><span>meals represented by claimed portions</span></div>
+        <p>Estimated environmental impact: <strong>{{ estimated_co2 }} kg CO₂e</strong> avoided. This is a prototype estimate for demonstration and should be replaced with verified local methodology in production.</p>
+    </div>
+    <div class="impact-card-side">
+        <div class="donut" style="--pct: {{ rescue_rate }}%"><div><strong>{{ rescue_rate }}%</strong><span>rescue rate</span></div></div>
+        <div class="impact-mini"><span>Listed</span><strong>{{ total_listed }}</strong></div>
+        <div class="impact-mini"><span>Claimed</span><strong>{{ claimed }}</strong></div>
+        <div class="impact-mini"><span>Picked up</span><strong>{{ picked_up }}</strong></div>
+    </div>
+</section>
+
+<section class="panel category-panel new-category">
+    <div class="panel-header"><div><span class="eyebrow">FOOD MIX</span><h2>Rescued by category</h2></div></div>
+    {% if category_stats %}
+    <div class="category-bars">{% for item in category_stats %}<div class="bar-item"><div class="progress-label"><span>{{ item.category }}</span><strong>{{ item.total }}</strong></div><div class="progress"><span style="width: {{ (item.total / claimed * 100) if claimed else 0 }}%"></span></div></div>{% endfor %}</div>
+    {% else %}<div class="empty-small">Category insights appear after the first claim.</div>{% endif %}
+</section>
+{% endblock %}

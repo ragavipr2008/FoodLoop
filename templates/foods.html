@@ -1,1 +1,44 @@
+{% extends "base.html" %}
+{% block title %}FoodLoop | Find Food{% endblock %}
+{% block content %}
+<section class="page-header modern-header">
+    <div>
+        <span class="eyebrow">RESCUE FEED</span>
+        <h1>Find food before it becomes waste.</h1>
+        <p>Browse active surplus listings or let SmartMatch rank them for you.</p>
+    </div>
+    <a class="btn primary" href="{{ url_for('smart_match') }}">✦ Open SmartMatch</a>
+</section>
 
+<section class="filter-card modern-filter">
+    <form method="GET" class="filter-form">
+        <div class="search-box"><span>⌕</span><input type="text" name="search" value="{{ search }}" placeholder="Search food, location or provider..."></div>
+        <select name="category"><option value="">All categories</option>{% for c in categories %}<option value="{{ c.category }}" {% if selected_category == c.category %}selected{% endif %}>{{ c.category }}</option>{% endfor %}</select>
+        <button class="btn primary" type="submit">Search</button>
+        {% if search or selected_category %}<a class="clear-link" href="{{ url_for('foods') }}">Clear</a>{% endif %}
+    </form>
+</section>
+
+<section class="section section-new no-top">
+    <div class="result-line"><strong>{{ listings|length }} rescue-ready listing(s)</strong><span>Sorted with urgent food first.</span></div>
+    <div class="food-grid">
+        {% for food in listings %}
+        <article class="food-card modern">
+            <div class="food-image">
+                {% if food.image_url %}<img src="{{ food.image_url }}" alt="{{ food.food_name }}">{% else %}<div class="placeholder-food">🍲</div>{% endif %}
+                <span class="urgency-tag {{ food.urgency_label|lower }}">{{ food.urgency_label }} rescue</span>
+            </div>
+            <div class="food-body">
+                <div class="card-topline"><span class="category">{{ food.category }}</span><span class="score-pill">✦ Smart {{ food.smart_score }}</span></div>
+                <h3>{{ food.food_name }}</h3>
+                <p>{{ food.description or "Surplus food available for pickup." }}</p>
+                <div class="food-meta"><span>📍 {{ food.pickup_location }}</span><span>⏰ {{ food.pickup_deadline }}</span><span>👤 {{ food.provider_name }}</span></div>
+                <div class="food-footer"><strong>{{ food.available_quantity }} / {{ food.total_quantity }}</strong><a href="{{ url_for('claim', food_id=food.id) }}" class="small-btn">Rescue Food</a></div>
+            </div>
+        </article>
+        {% else %}
+        <div class="empty-state wide"><div>🔎</div><h3>No matching food</h3><p>Try another search or category.</p></div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

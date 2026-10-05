@@ -1,1 +1,24 @@
+{% extends "base.html" %}
+{% block title %}FoodLoop | Donate Surplus{% endblock %}
+{% block content %}
+<section class="page-header modern-header compact">
+    <div><span class="eyebrow">FOOD PROVIDER</span><h1>Start a new food loop.</h1><p>Give surplus food a second destination instead of a waste bin.</p></div>
+</section>
 
+<section class="form-section modern-form-section">
+    <form method="POST" class="form-card modern-form">
+        <div class="form-title"><span class="icon-box">🍱</span><div><h2>Surplus Food Details</h2><p>SmartMatch will use these details to prioritize rescue opportunities.</p></div></div>
+        <div class="form-grid">
+            <label>Food Name *<input type="text" name="food_name" placeholder="e.g. Vegetable Biryani" required></label>
+            <label>Category *<select name="category" required><option value="">Select category</option><option>Meals</option><option>Breakfast</option><option>Snacks</option><option>Fruits</option><option>Bakery</option><option>Beverages</option><option>Other</option></select></label>
+            <label class="full">Description<textarea name="description" rows="4" placeholder="Freshness, packaging, allergens or other useful information..."></textarea></label>
+            <label>Quantity *<input type="number" name="quantity" min="1" placeholder="e.g. 50" required></label>
+            <label>Pickup Deadline *<input type="text" name="pickup_deadline" placeholder="e.g. Today 8:00 PM" required></label>
+            <label>Pickup Location *<input type="text" name="pickup_location" placeholder="e.g. Main Block Cafeteria" required></label>
+            <label>Provider Name *<input type="text" name="provider_name" placeholder="e.g. College Canteen" required></label>
+            <label class="full">Food Image URL <span class="optional">(optional)</span><input type="url" name="image_url" placeholder="https://example.com/food.jpg"></label>
+        </div>
+        <div class="form-actions"><a class="btn ghost" href="{{ url_for('foods') }}">Cancel</a><button class="btn primary" type="submit">Publish & Activate SmartMatch ✦</button></div>
+    </form>
+</section>
+{% endblock %}

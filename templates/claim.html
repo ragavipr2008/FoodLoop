@@ -1,1 +1,36 @@
+{% extends "base.html" %}
+{% block title %}FoodLoop | Rescue Food{% endblock %}
+{% block content %}
+<section class="page-header modern-header compact">
+    <div><span class="eyebrow">RESCUE CONFIRMATION</span><h1>Complete the loop.</h1><p>Claim the amount you can collect from this listing.</p></div>
+</section>
 
+<section class="claim-layout modern-claim">
+    <div class="food-preview modern-preview">
+        <div class="food-image large">
+            {% if food.image_url %}<img src="{{ food.image_url }}" alt="{{ food.food_name }}">{% else %}<div class="placeholder-food">🍲</div>{% endif %}
+            <span class="urgency-tag {{ urgency_label|lower }}">{{ urgency_label }} rescue</span>
+        </div>
+        <div class="food-body">
+            <div class="card-topline"><span class="category">{{ food.category }}</span><span class="score-pill">⚡ {{ urgency_score }}/100 urgency</span></div>
+            <h2>{{ food.food_name }}</h2>
+            <p>{{ food.description }}</p>
+            <div class="detail-grid">
+                <div><small>Available</small><strong>{{ food.available_quantity }} portions</strong></div>
+                <div><small>Pickup</small><strong>{{ food.pickup_location }}</strong></div>
+                <div><small>Deadline</small><strong>{{ food.pickup_deadline }}</strong></div>
+                <div><small>Provider</small><strong>{{ food.provider_name }}</strong></div>
+            </div>
+        </div>
+    </div>
+
+    <form method="POST" class="form-card claim-form modern-claim-form">
+        <div class="form-title"><span class="icon-box">🤝</span><div><h2>Claim Details</h2><p>Quantity updates instantly after confirmation.</p></div></div>
+        <label>Your Name / Organization *<input type="text" name="recipient_name" placeholder="e.g. Student Volunteers" required></label>
+        <label>Quantity to Claim *<input type="number" name="quantity" min="1" max="{{ food.available_quantity }}" placeholder="Maximum {{ food.available_quantity }}" required></label>
+        <div class="claim-tip">✦ Smart tip: claim only what you can pick up before the deadline.</div>
+        <button class="btn primary full-btn" type="submit">Confirm Rescue →</button>
+        <a class="back-link" href="{{ url_for('foods') }}">← Back to rescue feed</a>
+    </form>
+</section>
+{% endblock %}

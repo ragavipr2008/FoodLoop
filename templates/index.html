@@ -1,1 +1,99 @@
+{% extends "base.html" %}
+{% block title %}FoodLoop | Smart Food Rescue{% endblock %}
+{% block content %}
 
+<section class="hero hero-new">
+    <div class="hero-copy">
+        <div class="status-chip"><span class="pulse"></span> LIVE SMART FOOD RESCUE NETWORK</div>
+        <h1>Turn surplus food into <span>shared meals.</span></h1>
+        <p class="hero-lead">
+            FoodLoop connects campuses, events and cafeterias with people who can
+            use surplus food — before it becomes waste.
+        </p>
+        <div class="hero-buttons">
+            <a class="btn primary big" href="{{ url_for('add_food') }}">🍱 Donate Surplus Food</a>
+            <a class="btn ghost big" href="{{ url_for('smart_match') }}">✦ Find with SmartMatch</a>
+        </div>
+        <div class="hero-proof">
+            <div><strong>{{ stats.claimed }}</strong><span>portions rescued</span></div>
+            <div><strong>{{ stats.picked_up }}</strong><span>picked up</span></div>
+            <div><strong>{{ stats.listings }}</strong><span>active listings</span></div>
+        </div>
+    </div>
+
+    <div class="hero-visual">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="hero-bowl">🍲</div>
+        <div class="float-panel panel-ai">
+            <div class="ai-icon">✦</div>
+            <div><strong>SmartMatch</strong><small>Rescue-first recommendations</small></div>
+        </div>
+        <div class="float-panel panel-rescue">
+            <span class="mini-icon">♻️</span>
+            <div><strong>{{ stats.claimed }}+</strong><small>meals rescued</small></div>
+        </div>
+        <div class="hero-leaf leaf-a">🌿</div>
+        <div class="hero-leaf leaf-b">🍃</div>
+    </div>
+</section>
+
+<section class="feature-strip">
+    <div class="feature-item"><span>⚡</span><div><strong>Urgency Engine</strong><small>Prioritizes food nearing its pickup deadline.</small></div></div>
+    <div class="feature-item"><span>✦</span><div><strong>SmartMatch</strong><small>Scores listings by category, quantity and location.</small></div></div>
+    <div class="feature-item"><span>📊</span><div><strong>Impact Tracking</strong><small>Shows rescued, claimed and picked-up food.</small></div></div>
+</section>
+
+<section class="section section-new">
+    <div class="section-heading">
+        <div><span class="eyebrow">THE LOOP</span><h2>From surplus to impact in four steps.</h2></div>
+        <span class="section-note">Simple for users. Powerful for communities.</span>
+    </div>
+    <div class="steps-new">
+        <div class="step-new"><span>01</span><div class="step-icon">📦</div><h3>List</h3><p>Providers add surplus food, quantity, location and pickup deadline.</p></div>
+        <div class="step-new"><span>02</span><div class="step-icon">✦</div><h3>Match</h3><p>SmartMatch ranks suitable food and rescue urgency.</p></div>
+        <div class="step-new"><span>03</span><div class="step-icon">🤝</div><h3>Claim</h3><p>Recipients claim the quantity they can collect.</p></div>
+        <div class="step-new"><span>04</span><div class="step-icon">♻️</div><h3>Rescue</h3><p>Pickup is completed and the impact dashboard updates.</p></div>
+    </div>
+</section>
+
+<section class="section section-new">
+    <div class="section-heading">
+        <div><span class="eyebrow">RESCUE FEED</span><h2>Food that needs a home.</h2></div>
+        <a class="text-link" href="{{ url_for('foods') }}">Explore all →</a>
+    </div>
+
+    <div class="food-grid">
+        {% for food in latest %}
+        <article class="food-card modern">
+            <div class="food-image">
+                {% if food.image_url %}<img src="{{ food.image_url }}" alt="{{ food.food_name }}">{% else %}<div class="placeholder-food">🍲</div>{% endif %}
+                <span class="urgency-tag {{ food.urgency_label|lower }}">{{ food.urgency_label }} rescue</span>
+            </div>
+            <div class="food-body">
+                <div class="card-topline"><span class="category">{{ food.category }}</span><span class="score-pill">✦ {{ food.urgency_score }}/100</span></div>
+                <h3>{{ food.food_name }}</h3>
+                <p>{{ food.description or "Surplus food ready for pickup." }}</p>
+                <div class="food-meta"><span>📍 {{ food.pickup_location }}</span><span>⏰ {{ food.pickup_deadline }}</span></div>
+                <div class="food-footer"><strong>{{ food.available_quantity }} portions</strong><a href="{{ url_for('claim', food_id=food.id) }}" class="small-btn">Rescue →</a></div>
+            </div>
+        </article>
+        {% else %}
+        <div class="empty-state wide"><div>🍽️</div><h3>No active listings</h3><p>Start the loop by donating surplus food.</p></div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="impact-banner">
+    <div class="impact-copy">
+        <span class="eyebrow light">WHY FOODLOOP?</span>
+        <h2>Every rescued portion is a measurable impact.</h2>
+        <p>Track the journey from food listing to successful pickup in one place.</p>
+    </div>
+    <div class="impact-orbs">
+        <div><strong>{{ stats.claimed }}</strong><span>Rescued</span></div>
+        <div><strong>{{ stats.picked_up }}</strong><span>Picked Up</span></div>
+        <div><strong>{{ stats.available }}</strong><span>Available</span></div>
+    </div>
+</section>
+{% endblock %}
